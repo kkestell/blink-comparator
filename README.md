@@ -1,13 +1,25 @@
 ## Dependencies
 
 ```console
-$ sudo apt install python3-venv
+$ sudo apt install python3-pip python3-venv
+```
+
+```console
+$ git clone https://github.com/kkestell/blink-comparator.git bc
+$ cd bc
+```
+
+```console
 $ python3 -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
 ### Service
+
+```console
+$ mkdir -p ~/.config/systemd/user
+```
 
 ```console
 $ nano ~/.config/systemd/user/bc.service
@@ -64,6 +76,6 @@ $ journalctl --user-unit bc.service
 ## Notes
 
 ```console
-$ pip install beautifulsoup4 requests python-telegram-bot
+$ pip install beautifulsoup4 python-telegram-bot requests
 $ pip freeze > requirements.txt
 ```
