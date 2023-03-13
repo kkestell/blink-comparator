@@ -31,10 +31,8 @@ Description=Blink Comparator
 
 [Service]
 Type=oneshot
-ExecStart=%h/bc/venv/bin/python %h/bc/bc.py
-Environment=URL=https://example.com
-Environment=TELEGRAM_API_KEY=123456789:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
-Environment=TELEGRAM_CHAT_ID=123456789
+ExecStart=%h/bc/venv/bin/python %h/bc/main.py
+WorkingDirectory=%h/bc
 ```
 
 ### Timer
