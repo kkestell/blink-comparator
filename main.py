@@ -18,7 +18,7 @@ class State:
     count: int = 0
 
 
-def load_state() -> State:
+def load_state():
     try:
         with open(state_file, 'r') as f:
             data = json.load(f)
@@ -27,28 +27,28 @@ def load_state() -> State:
     return State(**data)
 
 
-def save_state(state: State) -> None:
+def save_state(state):
     with open(state_file, 'w') as f:
         json.dump(state.__dict__, f)
 
 
-def notify(message: str) -> None:
-    bot: Bot = Bot(token=api_key)
+def notify(message):
+    bot = Bot(token=api_key)
     asyncio.run(bot.send_message(chat_id=chat_id, text=message))
 
 
-def fetch() -> str:
-    r: requests.Response = requests.get(url)
-    soup: BeautifulSoup = BeautifulSoup(r.text, 'html.parser')
-    ul: BeautifulSoup = soup.find('ul', {'class': 'og-grid'})
-    text: str = ul.get_text()
-    text: str = ' '.join(text.split())
+def fetch():
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    ul = soup.find('ul', {'class': 'og-grid'})
+    text = ul.get_text()
+    text = ' '.join(text.split())
     return text
 
 
 if __name__ == '__main__':
-    state: State = load_state()
-    new: str = fetch()
+    state = load_state()
+    new = fetch()
 
     if state.content is None:
         state.content = new
