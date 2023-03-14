@@ -1,3 +1,7 @@
+# Blink Comparator
+
+Monitor a website and send a Telegram message when it changes.
+
 ## Dependencies
 
 ```console
@@ -14,6 +18,8 @@ $ python3 -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
+
+## Systemd
 
 ### Service
 
@@ -59,6 +65,12 @@ WantedBy=timers.target
 $ systemctl --user daemon-reload
 $ systemctl --user enable bc.timer
 $ systemctl --user start bc.timer
+```
+
+The systemd user instance runs when a user logs in and stops when their last session ends. But sometimes, it's needed to start the systemd user instance right after boot and keep it running even after the user logs out. This is called "lingering," and you can enable it for a specific user using the command:
+
+```console
+$ loginctl enable-linger $(whoami)
 ```
 
 ### Check status

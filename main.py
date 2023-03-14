@@ -2,15 +2,14 @@ import asyncio
 from bs4 import BeautifulSoup
 from dataclasses import dataclass
 import json
-import os
 import requests
 from telegram import Bot
 
 
 state_file = 'state.json'
-url        = os.environ['URL']
-api_key    = os.environ['TELEGRAM_API_KEY']
-chat_id    = os.environ['TELEGRAM_CHAT_ID']
+url        = ''
+api_key    = ''
+chat_id    = ''
 
 
 @dataclass
@@ -33,23 +32,23 @@ def save_state(state: State) -> None:
         json.dump(state.__dict__, f)
 
 
-def notify(message):
-    bot = Bot(token=api_key)
+def notify(message: str) -> None:
+    bot: Bot = Bot(token=api_key)
     asyncio.run(bot.send_message(chat_id=chat_id, text=message))
 
 
-def fetch():
-    r = requests.get(url)
-    soup = BeautifulSoup(r.text, 'html.parser')
-    ul = soup.find('ul', {'class': 'og-grid'})
-    text = ul.get_text()
-    text = ' '.join(text.split())
+def fetch() -> str:
+    r: requests.Response = requests.get(url)
+    soup: BeautifulSoup = BeautifulSoup(r.text, 'html.parser')
+    ul: BeautifulSoup = soup.find('ul', {'class': 'og-grid'})
+    text: str = ul.get_text()
+    text: str = ' '.join(text.split())
     return text
 
 
 if __name__ == '__main__':
-    state = load_state()
-    new = fetch()
+    state: State = load_state()
+    new: str = fetch()
 
     if state.content is None:
         state.content = new
