@@ -1,17 +1,31 @@
 # Blink Comparator
 
-Monitor a website and send a Telegram message when it changes.
+Blink Comparator is a Python script that monitors a website and sends a Telegram message when it changes. This README file provides instructions on how to set up and run Blink Comparator as a systemd service on a Linux machine.
 
 ## Dependencies
+
+Before installing and running Blink Comparator, make sure that you have installed the following dependencies:
+
+* Python 3
+* pip3
+* venv
+
+To install these dependencies, run the following command in the terminal:
 
 ```console
 $ sudo apt install python3-pip python3-venv
 ```
 
+## Installation
+
+To install Blink Comparator, clone the repository and navigate to the project directory:
+
 ```console
 $ git clone https://github.com/kkestell/blink-comparator.git bc
 $ cd bc
 ```
+
+Then, create a virtual environment and install the required packages:
 
 ```console
 $ python3 -m venv venv
@@ -19,17 +33,20 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-## Systemd
+## Running as a systemd service
+
+Blink Comparator can be run as a systemd service, which allows it to run in the background and automatically start on boot.
 
 ### Service
 
-```console
-$ mkdir -p ~/.config/systemd/user
-```
+To create a systemd service, create a file called bc.service in the ~/.config/systemd/user/ directory:
 
 ```console
+$ mkdir -p ~/.config/systemd/user
 $ nano ~/.config/systemd/user/bc.service
 ```
+
+In the file, add the following configuration:
 
 ```ini
 [Unit]
@@ -41,11 +58,17 @@ ExecStart=%h/bc/venv/bin/python %h/bc/main.py
 WorkingDirectory=%h/bc
 ```
 
+This configuration specifies that the service runs a Python script called main.py located in the ~/bc directory using the virtual environment created earlier.
+
 ### Timer
+
+To schedule the service to run at regular intervals, create a file called bc.timer in the ~/.config/systemd/user/ directory:
 
 ```console
 $ nano ~/.config/systemd/user/bc.timer
 ```
+
+In the file, add the following configuration:
 
 ```ini
 [Unit]
@@ -59,6 +82,12 @@ OnBootSec=10s
 WantedBy=timers.target
 ```
 
+This configuration specifies that the service should be run every 15 minutes (`OnUnitActiveSec=15min`) and that it should start 10 seconds after boot (`OnBootSec=10s`).
+
+### Enable and start
+
+To enable and start the service and timer, run the following commands:
+
 ### Enable and start
 
 ```console
@@ -67,15 +96,17 @@ $ systemctl --user enable bc.timer
 $ systemctl --user start bc.timer
 ```
 
-"Lingering" is a systemd feature that allows the systemd user instance to start running right after boot and keep running even after the user logs out. Normally, the systemd user instance is started when a user logs in and stopped when their last session ends. However, with lingering enabled, the systemd user instance will remain running in the background, ready for the next user to log in.
+### Lingering
 
-This feature is useful in situations where a service or a daemon needs to be constantly running, regardless of whether a user is logged in or not. By enabling lingering for a specific user, you ensure that the necessary background processes are always running, even if no user is currently logged in.
+By default, systemd user instances are started when a user logs in and stopped when their last session ends. However, to ensure that Blink Comparator is always running, even when no user is logged in, you can enable "lingering" for the current user:
 
 ```console
 $ loginctl enable-linger $(whoami)
 ```
 
 ### Check status
+
+To check the status of the service and timer, run the following commands:
 
 ```console
 $ systemctl --user status bc.timer
@@ -84,6 +115,8 @@ $ systemctl --user list-timers --all
 ```
 
 ### Logs
+
+To view the logs for the service and timer, run the following commands:
 
 ```console
 $ journalctl --user-unit bc.timer
