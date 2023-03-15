@@ -129,3 +129,9 @@ $ journalctl --user-unit bc.service
 $ pip install beautifulsoup4 python-telegram-bot requests
 $ pip freeze > requirements.txt
 ```
+
+## Name
+
+> A blink comparator is a viewing apparatus formerly used by astronomers to find differences between two photographs of the night sky. It permits rapid switching from viewing one photograph to viewing the other, "blinking" back and forth between the two images taken of the same area of the sky at different times. This allows the user to more easily spot objects in the night sky that have changed position or brightness.
+
+See: https://en.wikipedia.org/wiki/Blink_comparator
