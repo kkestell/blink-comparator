@@ -72,7 +72,7 @@ In the file, add the following configuration:
 
 ```ini
 [Unit]
-Description=Binary Comparator timer
+Description=Blink Comparator timer
 
 [Timer]
 OnUnitActiveSec=15min

@@ -60,11 +60,7 @@ if __name__ == '__main__':
         state.content = new
         state.count = 0
     else:
-        if state.count % 4 == 0:
-            notify('Still alive!')
-
         state.count += 1
-
         if state.count >= 96:
             notify('Still no changes...')
             state.count = 0
