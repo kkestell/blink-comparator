@@ -1,19 +1,23 @@
 # Blink Comparator
 
-Blink Comparator is a Python script that monitors a website and sends a Telegram message when it changes. This README file provides instructions on how to set up and run Blink Comparator as a systemd service on a Linux machine.
+Blink Comparator is a Python script that monitors a website and sends a Telegram message when it changes.
 
 ## Dependencies
 
-Before installing and running Blink Comparator, make sure that you have installed the following dependencies:
+* `python`
+* `pip`
+* `venv`
 
-* Python 3
-* pip3
-* venv
-
-To install these dependencies, run the following command in the terminal:
+### Arch
 
 ```console
-$ sudo apt install python3-pip python3-venv
+$ sudo pacman -Syu python python-pip python-virtualenv
+```
+
+### Debian
+
+```console
+$ sudo apt install python3 python3-pip python3-venv
 ```
 
 ## Installation
@@ -37,9 +41,9 @@ $ pip install -r requirements.txt
 
 Blink Comparator can be run as a systemd service, which allows it to run in the background and automatically start on boot.
 
-### Service
+### Create Service
 
-To create a systemd service, create a file called bc.service in the ~/.config/systemd/user/ directory:
+To create a systemd service, create a file called `bc.service` in the `~/.config/systemd/user/` directory:
 
 ```console
 $ mkdir -p ~/.config/systemd/user
@@ -58,11 +62,9 @@ ExecStart=%h/bc/venv/bin/python %h/bc/main.py
 WorkingDirectory=%h/bc
 ```
 
-This configuration specifies that the service runs a Python script called main.py located in the ~/bc directory using the virtual environment created earlier.
+### Create Timer
 
-### Timer
-
-To schedule the service to run at regular intervals, create a file called bc.timer in the ~/.config/systemd/user/ directory:
+To schedule the service to run at regular intervals, create a file called bc.timer in the `~/.config/systemd/user/` directory:
 
 ```console
 $ nano ~/.config/systemd/user/bc.timer
@@ -82,13 +84,9 @@ OnBootSec=10s
 WantedBy=timers.target
 ```
 
-This configuration specifies that the service should be run every 15 minutes (`OnUnitActiveSec=15min`) and that it should start 10 seconds after boot (`OnBootSec=10s`).
-
 ### Enable and start
 
-To enable and start the service and timer, run the following commands:
-
-### Enable and start
+Enable and start the service and timer:
 
 ```console
 $ systemctl --user daemon-reload
@@ -106,7 +104,7 @@ $ loginctl enable-linger $(whoami)
 
 ### Check status
 
-To check the status of the service and timer, run the following commands:
+Check the status of the service and timer:
 
 ```console
 $ systemctl --user status bc.timer
@@ -116,7 +114,7 @@ $ systemctl --user list-timers --all
 
 ### Logs
 
-To view the logs for the service and timer, run the following commands:
+View the logs for the service and timer:
 
 ```console
 $ journalctl --user-unit bc.timer
