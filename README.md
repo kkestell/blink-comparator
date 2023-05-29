@@ -1,40 +1,41 @@
 # Blink Comparator
 
-Blink Comparator is a Python script that monitors a website and sends a Telegram message when it changes.
+Blink Comparator monitors a website and sends a Telegram message when it changes.
 
-## Dependencies
+## Building
 
-* `python`
-* `pip`
-* `venv`
-
-### Arch
+To build Blink Comparator, clone the repository and navigate to the project directory:
 
 ```console
-$ sudo pacman -Syu python python-pip python-virtualenv
+$ git clone https://github.com/kkestell/blink-comparator.git blink-comparator
+$ cd blink-comparator
 ```
 
-### Debian
+And build:
 
 ```console
-$ sudo apt install python3 python3-pip python3-venv
+$ go build
 ```
 
-## Installation
-
-To install Blink Comparator, clone the repository and navigate to the project directory:
+or
 
 ```console
-$ git clone https://github.com/kkestell/blink-comparator.git bc
-$ cd bc
+$ make
 ```
 
-Then, create a virtual environment and install the required packages:
+## Configuration
 
-```console
-$ python3 -m venv venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
+Blink Comparator is configured using a JSON file. The default configuration file is `config.json` in the same directory as the executable.
+
+Example:
+
+```json
+{
+  "stateFile": "state.json",
+  "url": "https://example.com",
+  "apiKey": "1679546312:FFDGH_Z5v_4JnEJauahsjfdhawF28Q",
+  "chatID": 1457865941
+}
 ```
 
 ## Running as a systemd service
@@ -43,11 +44,11 @@ Blink Comparator can be run as a systemd service, which allows it to run in the 
 
 ### Create Service
 
-To create a systemd service, create a file called `bc.service` in the `~/.config/systemd/user/` directory:
+To create a systemd service, create a file called `blink-comparator.service` in the `~/.config/systemd/user/` directory:
 
 ```console
 $ mkdir -p ~/.config/systemd/user
-$ nano ~/.config/systemd/user/bc.service
+$ nano ~/.config/systemd/user/blink-comparator.service
 ```
 
 In the file, add the following configuration:
@@ -58,8 +59,8 @@ Description=Blink Comparator
 
 [Service]
 Type=oneshot
-ExecStart=%h/bc/venv/bin/python %h/bc/main.py
-WorkingDirectory=%h/bc
+ExecStart=%h/blink-comparator/blink-comparator
+WorkingDirectory=%h/blink-comparator
 ```
 
 ### Create Timer
@@ -67,7 +68,7 @@ WorkingDirectory=%h/bc
 To schedule the service to run at regular intervals, create a file called bc.timer in the `~/.config/systemd/user/` directory:
 
 ```console
-$ nano ~/.config/systemd/user/bc.timer
+$ nano ~/.config/systemd/user/blink-comparator.timer
 ```
 
 In the file, add the following configuration:
@@ -90,8 +91,8 @@ Enable and start the service and timer:
 
 ```console
 $ systemctl --user daemon-reload
-$ systemctl --user enable bc.timer
-$ systemctl --user start bc.timer
+$ systemctl --user enable blink-comparator.timer
+$ systemctl --user start blink-comparator.timer
 ```
 
 ### Lingering
@@ -107,8 +108,8 @@ $ loginctl enable-linger $(whoami)
 Check the status of the service and timer:
 
 ```console
-$ systemctl --user status bc.timer
-$ systemctl --user status bc.service
+$ systemctl --user status blink-comparator.timer
+$ systemctl --user status blink-comparator.service
 $ systemctl --user list-timers --all
 ```
 
@@ -117,8 +118,8 @@ $ systemctl --user list-timers --all
 View the logs for the service and timer:
 
 ```console
-$ journalctl --user-unit bc.timer
-$ journalctl --user-unit bc.service
+$ journalctl --user-unit blink-comparator.timer
+$ 
 ```
 
 ## Notes
