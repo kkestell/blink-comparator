@@ -12,10 +12,11 @@ import (
 )
 
 type Config struct {
-	StateFile string `json:"stateFile"`
-	URL       string `json:"url"`
-	ApiKey    string `json:"apiKey"`
-	ChatID    int64  `json:"chatID"`
+	StateFile    string `json:"stateFile"`
+	URL          string `json:"url"`
+	ApiKey       string `json:"apiKey"`
+	ChatID       int64  `json:"chatID"`
+	HTMLSelector string `json:"htmlSelector"`
 }
 
 type State struct {
@@ -104,7 +105,7 @@ func fetch(url string) string {
 		return ""
 	}
 
-	doc.Find("ul.og-grid").Each(func(i int, s *goquery.Selection) {
+	doc.Find(config.HTMLSelector).Each(func(i int, s *goquery.Selection) {
 		text = strings.TrimSpace(s.Text())
 	})
 
