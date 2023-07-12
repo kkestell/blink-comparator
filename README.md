@@ -1,136 +1,35 @@
 # Blink Comparator
 
-Blink Comparator monitors a website and sends a Telegram message when it changes.
+Blink Comparator is a C# program for monitoring changes to a specific HTML element on a web page and sending notifications via Telegram when changes are detected.
 
-## Building
+## Description
 
-To build Blink Comparator, clone the repository and navigate to the project directory:
+The program retrieves the content of the specified HTML element from the specified URL. If the content has changed relative to the last check, a notification is sent to a specified Telegram chat. The URL, HTML element selector, and Telegram settings are read from a JSON configuration file.
 
-```console
-$ git clone https://github.com/kkestell/blink-comparator.git blink-comparator
-$ cd blink-comparator
-```
+## Options
 
-And build:
+No command-line options are required.
 
-```console
-$ go build
-```
+## Environment Variables
 
-or
+* `BLINK_COMPARATOR_CONFIG`: This environment variable can be set to the path of the configuration file. If not set, the configuration file at `~/.config/blink-comparator/config.json` is used.
+* `BLINK_COMPARATOR_STATE`: This environment variable can be set to the path of the state file. If not set, the state file at `~/.local/state/blink-comparator/state.json` is used.
 
-```console
-$ make
-```
+## Configuration File
 
-## Configuration
+The configuration file is a JSON file that specifies the settings for the program. It includes the following properties:
 
-Blink Comparator is configured using a JSON file. The default configuration file is `config.json` in the same directory as the executable.
+* `Url` (string, required): The URL of the page to monitor.
+* `HtmlSelector` (string, required): The CSS selector of the HTML element to monitor.
+* `ApiKey` (string, required): The API key for the Telegram bot.
+* `ChatId` (int64, required): The ID of the Telegram chat where notifications will be sent.
 
-Example:
+Example configuration file:
 
 ```json
 {
-  "stateFile": "state.json",
-  "url": "https://example.com",
-  "apiKey": "1679546312:FFDGH_Z5v_4JnEJauahsjfdhawF28Q",
-  "chatID": 1457865941
+  "Url": "http://example.com",
+  "HtmlSelector": ".content",
+  "ApiKey": "yourtelegramapikey",
+  "ChatId": 1234567890
 }
-```
-
-## Running as a systemd service
-
-Blink Comparator can be run as a systemd service, which allows it to run in the background and automatically start on boot.
-
-### Create Service
-
-To create a systemd service, create a file called `blink-comparator.service` in the `~/.config/systemd/user/` directory:
-
-```console
-$ mkdir -p ~/.config/systemd/user
-$ nano ~/.config/systemd/user/blink-comparator.service
-```
-
-In the file, add the following configuration:
-
-```ini
-[Unit]
-Description=Blink Comparator
-
-[Service]
-Type=oneshot
-ExecStart=%h/blink-comparator/blink-comparator
-WorkingDirectory=%h/blink-comparator
-```
-
-### Create Timer
-
-To schedule the service to run at regular intervals, create a file called bc.timer in the `~/.config/systemd/user/` directory:
-
-```console
-$ nano ~/.config/systemd/user/blink-comparator.timer
-```
-
-In the file, add the following configuration:
-
-```ini
-[Unit]
-Description=Blink Comparator timer
-
-[Timer]
-OnUnitActiveSec=15min
-OnBootSec=10s
-
-[Install]
-WantedBy=timers.target
-```
-
-### Enable and start
-
-Enable and start the service and timer:
-
-```console
-$ systemctl --user daemon-reload
-$ systemctl --user enable blink-comparator.timer
-$ systemctl --user start blink-comparator.timer
-```
-
-### Lingering
-
-By default, systemd user instances are started when a user logs in and stopped when their last session ends. However, to ensure that Blink Comparator is always running, even when no user is logged in, you can enable "lingering" for the current user:
-
-```console
-$ loginctl enable-linger $(whoami)
-```
-
-### Check status
-
-Check the status of the service and timer:
-
-```console
-$ systemctl --user status blink-comparator.timer
-$ systemctl --user status blink-comparator.service
-$ systemctl --user list-timers --all
-```
-
-### Logs
-
-View the logs for the service and timer:
-
-```console
-$ journalctl --user-unit blink-comparator.timer
-$ 
-```
-
-## Notes
-
-```console
-$ pip install beautifulsoup4 python-telegram-bot requests
-$ pip freeze > requirements.txt
-```
-
-## Name
-
-> A blink comparator is a viewing apparatus formerly used by astronomers to find differences between two photographs of the night sky. It permits rapid switching from viewing one photograph to viewing the other, "blinking" back and forth between the two images taken of the same area of the sky at different times. This allows the user to more easily spot objects in the night sky that have changed position or brightness.
-
-See: https://en.wikipedia.org/wiki/Blink_comparator
